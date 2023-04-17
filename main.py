@@ -25,12 +25,3 @@ app.include_router(tariffs_router)
 app.include_router(incomes_router)
 app.include_router(expenses_router)
 app.include_router(login_router)
-
-
-if __name__ == '__main__':
-    uvicorn.run(
-        "main:app",
-        host="localhost",
-        port=8080,
-        reload=True
-    )
