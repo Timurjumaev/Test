@@ -6,49 +6,41 @@ from db import Base
 
 
 def get_in_db(
-        session: Session,
-        model: Base,
+        db: Session,
+        model,
         ident: int
 ):
-    obj = session.query(model).get(ident)
+    obj = db.query(model).get(ident)
     if not obj:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Запись с идентификатором {ident} нет в базе!"
+            detail=f"Bazada bunday malumot yoq"
         )
     return obj
 
 
 def save_in_db(
-        session: Session,
+        db: Session,
         obj: Base
 ):
-    session.add(obj)
-    check_unique(session)
-    session.refresh(obj)
+    db.add(obj)
+    check_unique(db)
+    db.refresh(obj)
 
 
 def update_in_db(
-        session: Session,
+        db: Session,
         obj: Base
 ):
-    check_unique(session)
-    session.refresh(obj)
-
-
-def delete_in_db(
-        session: Session,
-        obj: Base
-):
-    session.delete(obj)
-    session.commit()
+    check_unique(db)
+    db.refresh(obj)
 
 
 def check_unique(session: Session) -> None:
     try:
         session.commit()
-    except IntegrityError:
+    except IntegrityError as err:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Такое имя уже занято"
+            detail=f"{err.orig}"
         )

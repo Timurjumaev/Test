@@ -18,8 +18,15 @@ class Expenses(Base):
     type = Column(Enum(ExpenseType))
     comment = Column(String(255))
 
-    source_id = Column(Integer)
-    # source = relationship()
+    # kimga
+    destination_id = Column(Integer)
+    # destination = relationship()
 
+    # nam uchun
+    for_id = Column(Integer)
+
+    # kimdan
+    branch_id = Column(Integer, ForeignKey("branches.id", ondelete="SET NULL"))
+
+    # kim yaratgan
     user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"))
-    # for_id = Column(Integer, ForeignKey("orders.id", ondelete="SET NULL"))
