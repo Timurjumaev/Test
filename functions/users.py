@@ -20,6 +20,7 @@ def one_user(id, db):
 
 
 def create_user_r(form, db):
+    if db.query(Users).filter(Users.username == form.username).first() is None:
         password_hash = get_password_hash(form.password)
         new_user_db = Users(
             name=form.name,
@@ -34,6 +35,8 @@ def create_user_r(form, db):
         db.commit()
         db.refresh(new_user_db)
         return new_user_db
+    return ("Username error")
+
 
 
 
@@ -41,15 +44,17 @@ def create_user_r(form, db):
 def update_user_r(form, db):
     if one_user(form.id, db) is None:
         raise HTTPException(status_code=400, detail="Bunday id raqamli user mavjud emas")
-    password_hash = get_password_hash(form.password_hash)
-    db.query(Users).filter(Users.id == form.id).update({
-        Users.name: form.name,
-        Users.username: form.username,
-        Users.password: form.password,
-        Users.password_hash: password_hash,
-        Users.address: form.address,
-        Users.role: form.role,
-        Users.status: form.status
-    })
-    db.commit()
+    if db.query(Users).filter(Users.username == form.username).first() is None:
+        password_hash = get_password_hash(form.password_hash)
+        db.query(Users).filter(Users.id == form.id).update({
+            Users.name: form.name,
+            Users.username: form.username,
+            Users.password: form.password,
+            Users.password_hash: password_hash,
+            Users.address: form.address,
+            Users.role: form.role,
+            Users.status: form.status
+        })
+        db.commit()
+    return ("Username error")
 
